@@ -1,0 +1,166 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<style>
+    .posts-container {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+        margin-top: 30px;
+    }
+
+    .post {
+        background: white;
+        border-radius: 16px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        border: 1px solid #eaecef;
+        transition: transform 0.2s;
+    }
+
+    .post:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    }
+
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 15px;
+    }
+
+    .post h2 {
+        color: #1a73e8;
+        font-size: 1.8em;
+        margin-bottom: 10px;
+    }
+
+    .post-meta {
+        color: #5f6368;
+        font-size: 0.9em;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f1f3f4;
+    }
+
+    .author {
+        background: #e8f0fe;
+        color: #1a73e8;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 500;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-edit, .btn-delete {
+        padding: 6px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9em;
+        transition: all 0.2s;
+    }
+
+    .btn-edit {
+        background: #f1f3f4;
+        color: #5f6368;
+    }
+
+    .btn-edit:hover {
+        background: #e8eaed;
+        color: #1a73e8;
+    }
+
+    .btn-delete {
+        background: #fee;
+        color: #dc3545;
+    }
+
+    .btn-delete:hover {
+        background: #fdd;
+    }
+
+    .post img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin: 20px 0;
+    }
+
+    .post-content {
+        line-height: 1.8;
+        color: #2c3e50;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 16px;
+        border: 2px dashed #eaecef;
+    }
+
+    .empty-state p {
+        font-size: 1.2em;
+        color: #5f6368;
+        margin-bottom: 20px;
+    }
+
+    .read-more {
+        display: inline-block;
+        margin-top: 20px;
+        color: #1a73e8;
+        text-decoration: none;
+        font-weight: 500;
+    }
+</style>
+
+<h1>Последние записи</h1>
+
+<div class="posts-container">
+    {% for post in posts %}
+        <article class="post">
+            <div class="post-header">
+                <h2>{{ post.title }}</h2>
+                
+                {% if user == post.author %}
+                    <div class="post-actions">
+                        <a href="{% url 'post-update' post.pk %}" class="btn-edit">Ред.</a>
+                        <a href="{% url 'post-delete' post.pk %}" class="btn-delete">Уд.</a>
+                    </div>
+                {% endif %}
+            </div>
+            
+            <div class="post-meta">
+                <span class="author">{{ post.author.username }}</span>
+                <span>{{ post.date_posted|date:"j E Y, H:i" }}</span>
+            </div>
+            
+            {% if post.image %}
+                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+            {% endif %}
+            
+            <div class="post-content">
+                {{ post.content|linebreaks|truncatewords:50 }}
+            </div>
+            
+            <a href="{% url 'post-detail' post.pk %}" class="read-more">Читать далее →</a>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <p>📭 В блоге пока нет записей</p>
+            {% if user.is_authenticated %}
+                <p><a href="{% url 'post-create' %}" class="btn btn-primary">Написать первый пост</a></p>
+            {% else %}
+                <p><a href="{% url 'login' %}">Войдите</a>, чтобы написать пост</p>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

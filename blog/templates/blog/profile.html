@@ -1,0 +1,85 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<style>
+    .profile-header {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        margin-bottom: 30px;
+        border: 1px solid #eaecef;
+    }
+
+    .profile-header h2 {
+        color: #1a73e8;
+        margin-bottom: 10px;
+    }
+
+    .stats {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 20px;
+        color: #5f6368;
+    }
+
+    .posts-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .post-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        border: 1px solid #eaecef;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .post-info h3 {
+        color: #1a73e8;
+        margin-bottom: 5px;
+    }
+
+    .post-info small {
+        color: #5f6368;
+    }
+
+    .post-actions {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+
+<div class="profile-header">
+    <h2>{{ user.username }}</h2>
+    <p>{{ user.email }}</p>
+    <div class="stats">
+        <span>Всего постов: {{ posts|length }}</span>
+        <span>На сайте с: {{ user.date_joined|date:"j E Y" }}</span>
+    </div>
+</div>
+
+<h2>Мои посты</h2>
+
+<div class="posts-grid">
+    {% for post in posts %}
+        <div class="post-card">
+            <div class="post-info">
+                <h3>{{ post.title }}</h3>
+                <small>{{ post.date_posted|date:"j E Y, H:i" }}</small>
+            </div>
+            <div class="post-actions">
+                <a href="{% url 'post-update' post.pk %}" class="btn-edit">Ред.</a>
+                <a href="{% url 'post-delete' post.pk %}" class="btn-delete">Уд.</a>
+            </div>
+        </div>
+    {% empty %}
+        <p class="text-muted">У вас пока нет постов</p>
+    {% endfor %}
+</div>
+{% endblock %}

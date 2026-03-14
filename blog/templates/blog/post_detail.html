@@ -1,0 +1,64 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<style>
+    .post-detail {
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .post-detail h1 {
+        color: #1a73e8;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+    }
+
+    .post-detail .meta {
+        display: flex;
+        gap: 20px;
+        color: #5f6368;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f1f3f4;
+        margin-bottom: 30px;
+    }
+
+    .post-detail img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin: 30px 0;
+    }
+
+    .post-detail .content {
+        line-height: 1.8;
+        font-size: 1.1em;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 30px;
+        color: #1a73e8;
+        text-decoration: none;
+    }
+</style>
+
+<article class="post-detail">
+    <h1>{{ post.title }}</h1>
+    
+    <div class="meta">
+        <span>{{ post.author.username }}</span>
+        <span>{{ post.date_posted|date:"j E Y, H:i" }}</span>
+    </div>
+    
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="{{ post.title }}">
+    {% endif %}
+    
+    <div class="content">
+        {{ post.content|linebreaks }}
+    </div>
+    
+    <a href="{% url 'home' %}" class="back-link">← Назад к постам</a>
+</article>
+{% endblock %}
